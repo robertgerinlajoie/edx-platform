@@ -1606,9 +1606,7 @@ INSTALLED_APPS = (
     'survey',
 
     'lms.djangoapps.lms_xblock',
-
-    # edX Server API
-    'server_api',
+    'course_api',
 )
 
 ######################### MARKETING SITE ###############################
@@ -2006,7 +2004,3 @@ PDF_RECEIPT_LOGO_HEIGHT_MM = 12
 PDF_RECEIPT_COBRAND_LOGO_PATH = PROJECT_ROOT + '/static/images/default-theme/logo.png'
 # Height of the Co-brand Logo in mm
 PDF_RECEIPT_COBRAND_LOGO_HEIGHT_MM = 12
-
-
-############# OPEN EDX SERVER API #################
-FEATURES['SERVER_API'] = False
