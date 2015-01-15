@@ -281,13 +281,14 @@ $audit-color-lvl2: tint($audit-color-lvl1, 33%);
 // buttons
 $button-color: $blue;
 $focus-button-color: saturate($blue, 25%);
-$button-text-color: $white;
-$focus-button-text-color: $white;
+$button-text-color-light: $gray-l4;
+$button-text-color-dark: $gray-d4;
+$focus-button-text-color-light: $white;
+$focus-button-text-color-dark: $black;
 
 // buttons - base (in view/simple button)
 $button-base-color: $gray-l4;
 $focus-button-base-color: $gray-l3;
-$button-base-text-color: $gray-d4;
 $focus-button-base-text-color: $gray-d4;
 
 // buttons - primary (important/main action)
