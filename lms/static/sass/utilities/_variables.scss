@@ -281,8 +281,8 @@ $audit-color-lvl2: tint($audit-color-lvl1, 33%);
 // buttons
 $button-color: $blue;
 $focus-button-color: saturate($blue, 25%);
-$button-text-color-light: $gray-l4;
-$button-text-color-dark: $gray-d4;
+$button-text-color-light: $white;
+$button-text-color-dark: $black;
 $focus-button-text-color-light: $white;
 $focus-button-text-color-dark: $black;
 

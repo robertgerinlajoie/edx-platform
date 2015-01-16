@@ -46,7 +46,7 @@
 
   &:hover, &:focus {
     @include linear-gradient($focus-button-color, shade($focus-button-color, 30%)); // deviation from current styling
-    background: $focus-button-color;
+    background-color: $focus-button-color;
     color: set-button-text-color($focus-button-color);
   }
 
@@ -66,7 +66,7 @@
 
   &:hover, &:focus {
     @include linear-gradient($focus-button-base-color, shade($focus-button-base-color, 30%));
-    background: $focus-button-base-color;
+    background-color: $focus-button-base-color;
     color: set-button-text-color($focus-button-base-color);
   }
 }
@@ -80,7 +80,7 @@
 
   &:hover, &:focus {
     @include linear-gradient($focus-button-base-color, shade($focus-button-base-color, 30%));
-    background: $focus-button-base-color;
+    background-color: $focus-button-base-color;
     color: set-button-text-color($focus-button-base-color);
   }
 }
@@ -94,7 +94,7 @@
 
   &:hover, &:focus {
     @include linear-gradient($focus-button-secondary-color, shade($focus-button-secondary-color, 30%));
-    background: $focus-button-secondary-color;
+    background-color: $focus-button-secondary-color;
     color: set-button-text-color($focus-button-secondary-color);
   }
 }
@@ -108,7 +108,7 @@
 
   &:hover, &:focus {
     @include linear-gradient($focus-button-tertiary-color, shade($focus-button-tertiary-color, 30%));
-    background: $focus-button-tertiary-color;
+    background-color: $focus-button-tertiary-color;
     color: set-button-text-color($focus-button-tertiary-color);
   }
 }
