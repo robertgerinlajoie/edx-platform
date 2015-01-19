@@ -1058,6 +1058,10 @@
       .cohort-section-header > .form-field {
         padding-bottom: $baseline;
       }
+
+      &.is-disabled {
+        opacity: 0.25;
+      }
     }
   }
 
