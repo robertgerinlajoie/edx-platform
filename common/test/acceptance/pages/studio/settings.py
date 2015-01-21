@@ -18,18 +18,28 @@ class SettingsPage(CoursePage):
         return self.q(css='body.view-settings').present
 
     @property
-    def pre_requisite_course(self):
+    def pre_requisite_course(self, wait_for_field=True):
         """
         Returns the pre-requisite course drop down field.
         """
+        if wait_for_field:
+            EmptyPromise(
+                lambda: self.q(css='#pre-requisite-course'),
+                'Waiting for prequisite course dropdown...'
+            ).fulfill()
         return self.q(css='#pre-requisite-course')
 
     @property
-    def entrance_exam_field(self):
+    def entrance_exam_field(self, wait_for_field=True):
         """
         Returns the enable entrance exam checkbox.
         """
-        return self.q(css='#entrance-exam-enabled').execute()
+        if wait_for_field:
+            EmptyPromise(
+                lambda: self.q(css='#entrance-exam-enabled'),
+                'Waiting for entrance exam checkbox...'
+            ).fulfill()
+        return self.q(css='#entrance-exam-enabled')
 
     def require_entrance_exam(self, required=True):
         """
@@ -61,8 +71,13 @@ class SettingsPage(CoursePage):
                 'Waiting for save confirmation...'
             ).fulfill()
 
-    def refresh_page(self):
+    def refresh_page(self, wait_for_confirmation=True):
         """
         Reload the page.
         """
         self.browser.refresh()
+        if wait_for_confirmation:
+            EmptyPromise(
+                lambda: self.q(css='body.view-settings').present,
+                'Waiting for page refresh to complete...'
+            ).fulfill()
