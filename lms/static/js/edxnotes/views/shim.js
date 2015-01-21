@@ -115,6 +115,36 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
     ].join('');
 
     /**
+     * Modifies Annotator.Editor.html template to reverse order of Save and
+     * Cancel buttons.
+     **/
+    Annotator.Editor.prototype.html = [
+        '<div class="annotator-outer annotator-editor">',
+            '<form class="annotator-widget">',
+                '<ul class="annotator-listing"></ul>',
+                '<div class="annotator-controls">',
+                    '<a href="#" title="', _t('Save'), '" class="annotator-save">',
+                        _t('Save'),
+                    '</a>',
+                    '<a href="#" title="', _t('Cancel'), '" class="annotator-cancel">',
+                        _t('Cancel'),
+                    '</a>',
+                '</div>',
+            '</form>',
+        '</div>'
+    ].join('');
+
+    /**
+     * Modifies Annotator.Editor.show to remove focus on Save button.
+     **/
+    Annotator.Editor.prototype.show = _.compose(
+        function () {
+            this.element.find('.annotator-save').removeClass(this.classes.focus);
+        },
+        Annotator.Editor.prototype.show
+    );
+
+    /**
      * Modifies Annotator._setupViewer to add a "click" event on viewer.
      **/
     Annotator.prototype._setupViewer = _.compose(

@@ -14,14 +14,16 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
         pluginInit: function () {
             this.annotator.subscribe('annotationViewerTextField', _.bind(this.addAriaAttributes, this));
             this.annotator.element.on('keydown', '.annotator-hl', _.bind(this.onHighlightKeyDown, this));
-            this.annotator.element.on('keydown', '.annotator-controls', _.bind(this.onControlsKeyDown, this));
+            this.annotator.element.on('keydown', '.annotator-viewer', _.bind(this.onViewerKeyDown, this));
+            this.annotator.element.on('keydown', '.annotator-editor', _.bind(this.onEditorKeyDown, this));
             this.addTabIndex();
         },
 
         destroy: function () {
             this.annotator.unsubscribe('annotationViewerTextField', this.addAriaAttributes);
             this.annotator.element.off('keydown', '.annotator-hl');
-            this.annotator.element.off('keydown', '.annotator-controls');
+            this.annotator.element.off('keydown', '.annotator-viewer');
+            this.annotator.element.off('keydown', '.annotator-editor');
         },
 
         addTabIndex: function () {
@@ -85,21 +87,24 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
             }
         },
 
-        onControlsKeyDown: function (event) {
+        onViewerKeyDown: function (event) {
             var KEY = $.ui.keyCode,
                 keyCode = event.keyCode,
                 target = $(event.target),
-                controls, edit, del, note, id;
+                viewer, viewerControls, edit, del,
+                note, id;
 
-            controls = this.annotator.element.find('.annotator-controls');
-            edit = controls.find('.annotator-edit');
-            del = controls.find('.annotator-delete');
+            // Viewer elements
+            viewer = this.annotator.element.find('.annotator-viewer');
+            viewerControls = viewer.find('.annotator-controls');
+            edit = viewerControls.find('.annotator-edit');
+            del = viewerControls.find('.annotator-delete');
 
             switch (keyCode) {
                 case KEY.TAB:
-                    if (target.is('.annotator-edit')) {
+                    if (target.is(edit)) {
                         del.focus();
-                    } else if (target.is('.annotator-delete')) {
+                    } else if (target.is(del)) {
                         edit.focus();
                     }
                     event.preventDefault();
@@ -107,9 +112,64 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
                     break;
                 case KEY.ESCAPE:
                     this.annotator.viewer.hide();
-                    note = controls.siblings('div[role="note"]');
+                    note = viewerControls.siblings('div[role="note"]');
                     id = note.attr('id');
-                    $('.annotator-hl[aria-describedby='+id+']').focus();
+                    $('.annotator-hl[aria-describedby=' + id + ']').focus();
+                    break;
+            }
+        },
+
+        onEditorKeyDown: function (event) {
+            var KEY = $.ui.keyCode,
+                keyCode = event.keyCode,
+                target = $(event.target),
+                editor, editorControls, listing, items, firstItem, save, cancel,
+                viewer, viewerControls,
+                note, id;
+
+            // Viewer elements
+            viewer = this.annotator.element.find('.annotator-viewer');
+            viewerControls = viewer.find('.annotator-controls');
+
+            // Editor elements
+            editor = this.annotator.element.find('.annotator-editor');
+            listing = editor.find('.annotator-listing');
+            editorControls = editor.find('.annotator-controls');
+            items = listing.find('.annotator-item');
+            firstItem = items.first();
+            save  = editorControls.find('.annotator-save');
+            cancel = editorControls.find('.annotator-cancel');
+
+            switch (keyCode) {
+                case KEY.TAB:
+                    if (target.is(firstItem.children('textarea')) && event.shiftKey) {
+                        cancel.focus();
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else if (target.is(cancel) && !event.shiftKey) {
+                        firstItem.children('textarea').focus();
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    break;
+                case KEY.ENTER:
+                case KEY.SPACE:
+                    if (target.is(save)) {
+                        this.annotator.editor.submit();
+                    } else if (target.is(cancel)) {
+                        this.annotator.editor.hide();
+                    }
+                    note = viewerControls.siblings('div[role="note"]');
+                    id = note.attr('id');
+                    $('.annotator-hl[aria-describedby=' + id + ']').focus();
+                    event.preventDefault();
+                    break;
+                case KEY.ESCAPE:
+                    this.annotator.editor.hide();
+                    note = viewerControls.siblings('div[role="note"]');
+                    id = note.attr('id');
+                    $('.annotator-hl[aria-describedby=' + id + ']').focus();
+                    event.preventDefault();
                     break;
             }
         }
