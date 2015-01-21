@@ -17,6 +17,8 @@ class CourseMetadata(object):
     # The list of fields that wouldn't be shown in Advanced Settings.
     # Should not be used directly. Instead the filtered_list method should be used if the field needs to be filtered
     # depending on the feature flag.
+    # Note: Be sure to protect your filtered field by adding it to the checklist at
+    # common/test/acceptance/pagets/studio/settings_advanced.py:get_hidden_settings_names()
     FILTERED_LIST = [
         'xml_attributes',
         'start',
@@ -40,6 +42,7 @@ class CourseMetadata(object):
         'entrance_exam_enabled',
         'entrance_exam_minimum_score_pct',
         'entrance_exam_id',
+        'is_entrance_exam',
     ]
 
     @classmethod

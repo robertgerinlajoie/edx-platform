@@ -290,3 +290,9 @@ class AdvancedSettingsValidationTest(StudioCourseTest):
                 "Course Announcement Date": '"string"',
             }
         )
+
+    def test_hidden_fields_not_displayed(self):
+        exposed_fields = self.advanced_settings.get_settings_names()
+        for field in self.advanced_settings.get_hidden_settings_names():
+            if field in exposed_fields:
+                self.fail("Field '{}' should be hidden from Advanced Settings.".format(field))

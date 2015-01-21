@@ -13,6 +13,7 @@ MANUAL_BUTTON_SELECTOR = ".action-item .action-cancel"
 MODAL_SELECTOR = ".validation-error-modal-content"
 ERROR_ITEM_NAME_SELECTOR = ".error-item-title strong"
 ERROR_ITEM_CONTENT_SELECTOR = ".error-item-message"
+SETTINGS_NAME_SELECTOR = ".is-not-editable"
 
 
 class AdvancedSettingsPage(CoursePage):
@@ -126,3 +127,41 @@ class AdvancedSettingsPage(CoursePage):
             result_map[key] = val
 
         return result_map
+
+    def get_settings_names(self):
+        """
+        Returns all settings displayed on the advanced settings page/screen/modal/whatever
+        We call it 'name', but it's really whatever is embedded in the 'id' element for each field
+        """
+        query = self.q(css=SETTINGS_NAME_SELECTOR)
+        return [match.get_attribute('id') for match in query]
+
+    def get_hidden_settings_names(self):
+        """
+        Returns a list of settings which should not be displayed on the Advanced Settings screen
+        Matches the list of settings found in cms/djangoapps/models/settings/course_metadata.py
+        """
+        return [
+            'xml_attributes',
+            'start',
+            'end',
+            'enrollment_start',
+            'enrollment_end',
+            'tabs',
+            'graceperiod',
+            'checklists',
+            'show_timezone',
+            'format',
+            'graded',
+            'hide_from_toc',
+            'pdf_textbooks',
+            'user_partitions',
+            'name',
+            'tags',
+            'visible_to_staff_only',
+            'group_access',
+            'pre_requisite_courses',
+            'entrance_exam_enabled',
+            'entrance_exam_minimum_score_pct',
+            'entrance_exam_id',
+        ]
