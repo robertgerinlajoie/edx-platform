@@ -253,12 +253,12 @@ class PayAndVerifyTest(UniqueCourseTest):
         create a user and log them in.
         """
         super(PayAndVerifyTest, self).setUp()
-        self.track_selection_page = TrackSelectionPage(self.browser, self.course_id, separate_verified=True)
+        self.track_selection_page = TrackSelectionPage(self.browser, self.course_id)
         self.payment_and_verification_flow = PaymentAndVerificationFlow(self.browser, self.course_id)
         self.immediate_verification_page = PaymentAndVerificationFlow(self.browser, self.course_id, entry_point='verify-now')
         self.upgrade_page = PaymentAndVerificationFlow(self.browser, self.course_id, entry_point='upgrade')
         self.fake_payment_page = FakePaymentPage(self.browser, self.course_id)
-        self.dashboard_page = DashboardPage(self.browser, separate_verified=True)
+        self.dashboard_page = DashboardPage(self.browser)
 
         # Create a course
         CourseFixture(
