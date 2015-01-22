@@ -51,6 +51,17 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
             });
         },
 
+        focusOnHighlightedText: function (event) {
+            var viewer, viewerControls, note, id;
+
+            viewer = this.annotator.element.find('.annotator-viewer');
+            viewerControls = viewer.find('.annotator-controls');
+            note = viewerControls.siblings('div[role="note"]');
+            id = note.attr('id');
+            $('.annotator-hl[aria-describedby=' + id + ']').focus();
+            event.preventDefault();
+        },
+
         onHighlightKeyDown: function (event) {
             var KEY = $.ui.keyCode,
                 keyCode = event.keyCode,
@@ -91,8 +102,7 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
             var KEY = $.ui.keyCode,
                 keyCode = event.keyCode,
                 target = $(event.target),
-                viewer, viewerControls, edit, del,
-                note, id;
+                viewer, viewerControls, edit, del;
 
             // Viewer elements
             viewer = this.annotator.element.find('.annotator-viewer');
@@ -112,9 +122,7 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
                     break;
                 case KEY.ESCAPE:
                     this.annotator.viewer.hide();
-                    note = viewerControls.siblings('div[role="note"]');
-                    id = note.attr('id');
-                    $('.annotator-hl[aria-describedby=' + id + ']').focus();
+                    this.focusOnHighlightedText(event);
                     break;
             }
         },
@@ -124,12 +132,6 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
                 keyCode = event.keyCode,
                 target = $(event.target),
                 editor, editorControls, listing, items, firstItem, save, cancel,
-                viewer, viewerControls,
-                note, id;
-
-            // Viewer elements
-            viewer = this.annotator.element.find('.annotator-viewer');
-            viewerControls = viewer.find('.annotator-controls');
 
             // Editor elements
             editor = this.annotator.element.find('.annotator-editor');
@@ -153,23 +155,28 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
                     }
                     break;
                 case KEY.ENTER:
+                    if (target.is(save) || event.metaKey || event.ctrlKey) {
+                        this.annotator.editor.submit();
+                    } else if (target.is(cancel)) {
+                        this.annotator.editor.hide();
+                    } else {
+                        break;
+                    }
+                    this.focusOnHighlightedText(event);
+                    break;
                 case KEY.SPACE:
                     if (target.is(save)) {
                         this.annotator.editor.submit();
                     } else if (target.is(cancel)) {
                         this.annotator.editor.hide();
+                    } else {
+                        break;
                     }
-                    note = viewerControls.siblings('div[role="note"]');
-                    id = note.attr('id');
-                    $('.annotator-hl[aria-describedby=' + id + ']').focus();
-                    event.preventDefault();
+                    this.focusOnHighlightedText(event);
                     break;
                 case KEY.ESCAPE:
                     this.annotator.editor.hide();
-                    note = viewerControls.siblings('div[role="note"]');
-                    id = note.attr('id');
-                    $('.annotator-hl[aria-describedby=' + id + ']').focus();
-                    event.preventDefault();
+                    this.focusOnHighlightedText(event);
                     break;
             }
         }

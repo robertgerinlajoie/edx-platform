@@ -145,6 +145,13 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
     );
 
     /**
+     * Removes the textarea keydown event handler as it triggers 'processKeypress'
+     * which hides the viewer on ESC and saves on ENTER. We will define different
+     * behaviors for these in /plugins/accessibility.js
+     **/
+    delete Annotator.Editor.prototype.events["textarea keydown"];
+
+    /**
      * Modifies Annotator._setupViewer to add a "click" event on viewer.
      **/
     Annotator.prototype._setupViewer = _.compose(
