@@ -4,7 +4,7 @@ define([], function($, _) {
     /**
      * Replaces all newlines in a string by HTML line breaks.
      * @param {String} str The input string.
-     * @return Returns `String` with '<br>' instead all newlines (\r\n, \n\r, \n and \r).
+     * @return `String` with '<br>' instead all newlines (\r\n, \n\r, \n and \r).
      * @example
      *   nl2br("This\r\nis\n\ra\nstring\r")
      *   Output:
