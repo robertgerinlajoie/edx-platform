@@ -31,7 +31,7 @@
                 <button class="delete action-icon"><i class="icon fa fa-trash-o"></i><span><%= gettext("Delete") %></span></button>
             </li>
         <% } else { %>
-            <li class="action action-delete wrapper-delete-button" data-tooltip="<%= gettext('Cannot delete when in use by an experiment') %>">
+            <li class="action action-delete wrapper-delete-button" data-tooltip="<%= gettext('Cannot delete when in use by an unit') %>">
                 <button class="delete action-icon is-disabled" aria-disabled="true"><i class="icon fa fa-trash-o"></i><span><%= gettext("Delete") %></span></button>
             </li>
         <% } %>
@@ -41,7 +41,7 @@
 <% if (showContentGroupUsages) { %>
   <div class="collection-references wrapper-group-configuration-usages">
     <% if (!_.isEmpty(usage)) { %>
-      <h4 class="intro group-configuration-usage-text"><%= gettext('This Group is used in:') %></h4>
+      <h4 class="intro group-configuration-usage-text"><%= gettext('This content group is used in:') %></h4>
       <ol class="usage group-configuration-usage">
         <% _.each(usage, function(unit) { %>
           <li class="usage-unit group-configuration-usage-unit">

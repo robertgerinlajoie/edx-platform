@@ -23,6 +23,13 @@ define([
         // Translators: this refers to a collection of groups.
         itemDisplayName: gettext('content group'),
 
+        attributes: function () {
+            return {
+                'id': this.model.get('id'),
+                'tabindex': -1
+            };
+        },
+
         createEditView: function() {
             return new ContentGroupEditorView({model: this.model});
         },

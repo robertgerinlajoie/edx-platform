@@ -8,7 +8,7 @@
         <fieldset class="collection-fields">
             <div class="input-wrap field text required add-collection-name <% if(error && error.attributes && error.attributes.name) { print('error'); } %>">
                 <label for="group-cohort-name-<%= uniqueId %>"><%= gettext("Content Group Name") %></label><%
-                if (!_.isUndefined(id)) {
+                if (!_.isUndefined(id) && !_.isEmpty(id)) {
                     %><span class="group-configuration-id">
                         <span class="group-configuration-label"><%= gettext('Content Group ID') %></span>
                         <span class="group-configuration-value"><%= id %></span>
@@ -22,7 +22,7 @@
             <div class="wrapper-group-configuration-validation usage-validation">
                 <i class="icon fa fa-warning"></i>
                 <p class="group-configuration-validation-text">
-                    <%= gettext('This content group is currently used in different problems. If you make changes to the groups, you may need to edit those problems.') %>
+                    <%= gettext('This content group is currently used in different problems.') %>
                 </p>
             </div>
         <% } %>
@@ -37,7 +37,7 @@
                     <a class="button action-delete delete" href="#"><%= gettext("Delete") %></a>
                 </span>
             <% } else { %>
-                <span class="wrapper-delete-button" data-tooltip="<%= gettext('Cannot delete when in use by an experiment') %>">
+                <span class="wrapper-delete-button" data-tooltip="<%= gettext('Cannot delete when in use by an unit') %>">
                     <a class="button action-delete delete is-disabled" href="#" aria-disabled="true" ><%= gettext("Delete") %></a>
                 </span>
             <% } %>

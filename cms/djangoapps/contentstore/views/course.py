@@ -1519,12 +1519,11 @@ class GroupConfiguration(object):
 
         Returns json of particular content group configuration updated with usage information.
         """
-
         usage_info = GroupConfiguration.get_content_groups_usage_info(store, course)
         content_group_configuration = configuration.to_json()
 
         for group in content_group_configuration['groups']:
-            group['usage'] = usage_info.get(group['id'])
+            group['usage'] = usage_info.get(group['id'], [])
 
         return content_group_configuration
 

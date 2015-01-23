@@ -85,16 +85,17 @@ class HelperMethods(object):
         self.save_course()
         return (vertical, split_test)
 
-    def _add_user_partitions(self, count=1):
+    def _add_user_partitions(self, count=1, scheme_id="random"):
         """
         Create user partitions for the course.
         """
         partitions = [
             UserPartition(
-                i, 'Name ' + str(i), 'Description ' + str(i), [Group(0, 'Group A'), Group(1, 'Group B'), Group(2, 'Group C')]
+                i, 'Name ' + str(i), 'Description ' + str(i),
+                [Group(0, 'Group A'), Group(1, 'Group B'), Group(2, 'Group C')],
+                scheme=None, scheme_id=scheme_id
             ) for i in xrange(0, count)
         ]
-
         self.course.user_partitions = partitions
         self.save_course()
 
@@ -273,15 +274,18 @@ class GroupConfigurationsDetailHandlerTestCase(CourseTestCase, GroupConfiguratio
 
     ID = 0
 
-    def _url(self, cid=-1):
+    def _url(self, cid=-1, gid=None):
         """
         Return url for the handler.
         """
         cid = cid if cid > 0 else self.ID
+        kwargs = {'group_configuration_id': cid}
+        if gid:
+            kwargs.update({'group_id': gid})
         return reverse_course_url(
             'group_configurations_detail_handler',
             self.course.id,
-            kwargs={'group_configuration_id': cid},
+            kwargs=kwargs,
         )
 
     def test_can_create_new_group_configuration_if_it_does_not_exist(self):
@@ -358,6 +362,122 @@ class GroupConfigurationsDetailHandlerTestCase(CourseTestCase, GroupConfiguratio
         self.assertEqual(len(user_partititons[0].groups), 2)
         self.assertEqual(user_partititons[0].groups[0].name, u'New Group Name')
         self.assertEqual(user_partititons[0].groups[1].name, u'Group C')
+
+    def test_can_create_new_content_group_if_it_does_not_exist(self):
+        """
+        PUT new group configuration when no configurations exist in the course.
+        """
+        expected = {
+            u'id': 666,
+            u'name': u'Test name',
+            u'scheme': u'cohort',
+            u'description': u'Test description',
+            u'version': UserPartition.VERSION,
+            u'groups': [
+                {u'id': 0, u'name': u'Group A', u'version': 1, u'usage': []},
+                {u'id': 1, u'name': u'Group B', u'version': 1, u'usage': []},
+            ],
+        }
+        response = self.client.put(
+            self._url(cid=666),
+            data=json.dumps(expected),
+            content_type="application/json",
+            HTTP_ACCEPT="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        content = json.loads(response.content)
+
+        self.assertEqual(content, expected)
+        self.reload_course()
+        # Verify that user_partitions in the course contains the new group configuration.
+        user_partitions = self.course.user_partitions
+        self.assertEqual(len(user_partitions), 1)
+        self.assertEqual(user_partitions[0].name, u'Test name')
+        self.assertEqual(len(user_partitions[0].groups), 2)
+        self.assertEqual(user_partitions[0].groups[0].name, u'Group A')
+        self.assertEqual(user_partitions[0].groups[1].name, u'Group B')
+
+    def test_can_edit_content_group(self):
+        """
+        Edit content group and check its id and modified fields.
+        """
+        self._add_user_partitions(scheme_id='cohort')
+        self.save_course()
+
+        expected = {
+            u'id': self.ID,
+            u'name': u'New Test name',
+            u'scheme': u'cohort',
+            u'description': u'New Test description',
+            u'version': UserPartition.VERSION,
+            u'groups': [
+                {u'id': 0, u'name': u'New Group Name', u'version': 1, u'usage': []},
+                {u'id': 2, u'name': u'Group C', u'version': 1, u'usage': []},
+            ],
+        }
+
+        response = self.client.put(
+            self._url(),
+            data=json.dumps(expected),
+            content_type="application/json",
+            HTTP_ACCEPT="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        content = json.loads(response.content)
+        self.assertEqual(content, expected)
+        self.reload_course()
+
+        # Verify that user_partitions is properly updated in the course.
+        user_partititons = self.course.user_partitions
+
+        self.assertEqual(len(user_partititons), 1)
+        self.assertEqual(user_partititons[0].name, u'New Test name')
+        self.assertEqual(len(user_partititons[0].groups), 2)
+        self.assertEqual(user_partititons[0].groups[0].name, u'New Group Name')
+        self.assertEqual(user_partititons[0].groups[1].name, u'Group C')
+
+    def test_can_delete_content_group(self):
+        """
+        Delete content group and check user partitions.
+        """
+        self._add_user_partitions(count=1, scheme_id='cohort')
+        self.save_course()
+
+        response = self.client.delete(
+            self._url(cid=0, gid=1),
+            content_type="application/json",
+            HTTP_ACCEPT="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 204)
+        self.reload_course()
+        # Verify that group and partition is properly updated in the course.
+        user_partititons = self.course.user_partitions
+        self.assertEqual(len(user_partititons), 1)
+        self.assertEqual(len(user_partititons[0].groups), 2)
+        self.assertEqual(user_partititons[0].name, 'Name 0')
+
+    def test_cannot_delete_used_content_group(self):
+        """
+        Cannot delete content group if it is in use.
+        """
+        self._add_user_partitions(count=1)
+        self._create_content_experiment(cid=0)
+
+        response = self.client.delete(
+            self._url(cid=0),
+            content_type="application/json",
+            HTTP_ACCEPT="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        self.assertTrue(content['error'])
+        self.reload_course()
+        # Verify that user_partitions is still the same.
+        user_partititons = self.course.user_partitions
+        self.assertEqual(len(user_partititons), 1)
+        self.assertEqual(user_partititons[0].name, 'Name 0')
 
     def test_can_delete_group_configuration(self):
         """
