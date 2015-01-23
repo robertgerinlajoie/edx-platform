@@ -208,6 +208,7 @@ define(
                                                 expect($.trim($uploadElem.find(".video-detail-status").text())).toEqual(
                                                     ActiveVideoUpload.STATUS_UPLOADING
                                                 );
+                                                expect($uploadElem).not.toHaveClass("queued");
                                             });
                                         }
                                     });
