@@ -97,7 +97,7 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
             _.each(tabControls, function (element, index) {
                 if (element.is(tabControl)) {
                     previousIndex = index === 0  ? tabControls.length - 1 : index - 1;
-                    tabControls[previousIndex].focus;
+                    tabControls[previousIndex].focus();
                 }
             });
         },
@@ -166,7 +166,7 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
             var KEY = $.ui.keyCode,
                 keyCode = event.keyCode,
                 target = $(event.target),
-                editor, editorControls, listing, items, firstItem, save, cancel,
+                editor, editorControls, listing, items, firstItem, save, cancel;
 
             // Editor elements
             editor = this.annotator.element.find('.annotator-editor');
