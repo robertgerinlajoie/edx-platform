@@ -113,7 +113,7 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
                 case KEY.TAB:
                     if (this.annotator.viewer.isShown()) {
                         controls = this.annotator.element.find('.annotator-controls');
-                        edit = controls.find('.annotator-edit');
+                        edit = controls.find('.annotator-edit').first();
                         edit.focus();
                     }
                     break;
