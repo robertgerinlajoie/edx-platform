@@ -132,7 +132,6 @@ define(
 
             fileUploadSend: function(event, data) {
                 this.setStatus(data.cid, ActiveVideoUpload.STATUS_UPLOADING);
-                this.setProgress(data.cid, 0);
             },
 
             fileUploadProgress: function(event, data) {
