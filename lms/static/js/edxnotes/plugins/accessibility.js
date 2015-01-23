@@ -166,7 +166,7 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
             var KEY = $.ui.keyCode,
                 keyCode = event.keyCode,
                 target = $(event.target),
-                editor, editorControls, listing, items, firstItem, save, cancel,
+                editor, editorControls, listing, items, firstItem, save, cancel;
 
             // Editor elements
             editor = this.annotator.element.find('.annotator-editor');
