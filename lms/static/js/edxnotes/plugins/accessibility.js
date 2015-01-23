@@ -62,6 +62,46 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
             event.preventDefault();
         },
 
+        getViewerTabControls: function (event) {
+            var viewer, viewerControls, editButtons, delButtons, tabControls = [], i;
+
+            // Viewer elements
+            viewer = this.annotator.element.find('.annotator-viewer');
+            viewerControls = viewer.find('.annotator-controls');
+            editButtons = viewerControls.find('.annotator-edit');
+            delButtons = viewerControls.find('.annotator-delete');
+
+            // Edit and delete buttons always come in pairs
+            for (i = 0; i < editButtons.length; i++) {
+                tabControls.push($(editButtons.get(i)));
+                tabControls.push($(delButtons.get(i)));
+            }
+
+            return tabControls;
+        },
+
+        focusOnNextTabControl: function (tabControls, tabControl) {
+            var nextIndex;
+
+            _.each(tabControls, function (element, index) {
+                if (element.is(tabControl)) {
+                    nextIndex = index === tabControls.length - 1 ? 0 : index + 1;
+                    tabControls[nextIndex].focus();
+                }
+
+            });
+        },
+
+        focusOnPreviousTabControl: function (tabControls, tabControl) {
+            var previousIndex;
+            _.each(tabControls, function (element, index) {
+                if (element.is(tabControl)) {
+                    previousIndex = index === 0  ? tabControls.length - 1 : index - 1;
+                    tabControls[previousIndex].focus;
+                }
+            });
+        },
+
         onHighlightKeyDown: function (event) {
             var KEY = $.ui.keyCode,
                 keyCode = event.keyCode,
@@ -102,20 +142,15 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
             var KEY = $.ui.keyCode,
                 keyCode = event.keyCode,
                 target = $(event.target),
-                viewer, viewerControls, edit, del;
-
-            // Viewer elements
-            viewer = this.annotator.element.find('.annotator-viewer');
-            viewerControls = viewer.find('.annotator-controls');
-            edit = viewerControls.find('.annotator-edit');
-            del = viewerControls.find('.annotator-delete');
+                tabControls;
 
             switch (keyCode) {
                 case KEY.TAB:
-                    if (target.is(edit)) {
-                        del.focus();
-                    } else if (target.is(del)) {
-                        edit.focus();
+                    tabControls = this.getViewerTabControls();
+                    if (event.shiftKey) { // Tabbing backwards
+                        this.focusOnPreviousTabControl(tabControls, target);
+                    } else { // Tabbing forward
+                        this.focusOnNextTabControl(tabControls, target);
                     }
                     event.preventDefault();
                     event.stopPropagation();
