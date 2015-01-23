@@ -3,6 +3,8 @@ This file contains implementation override of SearchResultProcessor which will a
     * Blends in "location" property
     * Confirms user access to object
 """
+from django.core.urlresolvers import reverse
+
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from search.result_processor import SearchResultProcessor
 from xmodule.modulestore.django import modulestore
@@ -42,6 +44,19 @@ class LmsSearchResultProcessor(SearchResultProcessor):
         if usage_key not in self._module_temp_dictionary:
             self._module_temp_dictionary[usage_key] = self.get_module_store().get_item(usage_key)
         return self._module_temp_dictionary[usage_key]
+
+    @property
+    def url(self):
+        """
+        Property to display the url for the given location, useful for allowing navigation
+        """
+        if "course" not in self._results_fields or "id" not in self._results_fields:
+            return None
+
+        return reverse(
+            'jump_to',
+            kwargs={"course_id": self._results_fields["course"], "location": self._results_fields["id"]}
+        )
 
     @property
     def location(self):

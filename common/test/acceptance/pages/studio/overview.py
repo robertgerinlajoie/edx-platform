@@ -558,7 +558,6 @@ class CourseOutlinePage(CoursePage, CourseOutlineContainer):
         """
         return self.q(css=".button.re-index")[0]
 
-
     def expand_all_subsections(self):
         """
         Expands all the subsections in this course.
