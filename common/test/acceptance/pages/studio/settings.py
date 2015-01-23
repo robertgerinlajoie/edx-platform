@@ -18,27 +18,19 @@ class SettingsPage(CoursePage):
         return self.q(css='body.view-settings').present
 
     @property
-    def pre_requisite_course(self, wait_for_field=True):
+    def pre_requisite_course(self):
         """
         Returns the pre-requisite course drop down field.
         """
-        if wait_for_field:
-            EmptyPromise(
-                lambda: self.q(css='#pre-requisite-course'),
-                'Waiting for prequisite course dropdown...'
-            ).fulfill()
+        self.wait_for_element_presence('#pre-requisite-course', 'Waiting for prereq selector...')
         return self.q(css='#pre-requisite-course')
 
     @property
-    def entrance_exam_field(self, wait_for_field=True):
+    def entrance_exam_field(self):
         """
         Returns the enable entrance exam checkbox.
         """
-        if wait_for_field:
-            EmptyPromise(
-                lambda: self.q(css='#entrance-exam-enabled'),
-                'Waiting for entrance exam checkbox...'
-            ).fulfill()
+        self.wait_for_element_presence('#entrance-exam-enabled', 'Waiting for entexam checkbox...')
         return self.q(css='#entrance-exam-enabled')
 
     def require_entrance_exam(self, required=True):
